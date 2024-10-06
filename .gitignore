@@ -1,0 +1,47 @@
+# Exclure les fichiers de verrouillage temporaires créés par LibreOffice/OpenOffice
+.~lock.*.odt#
+*.pdf
+# Exclure les fichiers spécifiques à PyCharm
+.idea/
+*.iml
+
+# Exclure les fichiers spécifiques à VSCode
+.vscode/
+
+# Exclure les fichiers Python virtuels et environnement
+venv/
+.env/
+*.env
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Exclure les fichiers de logs, compilations, et artefacts
+*.log
+*.cache
+*.bak
+*.swp
+*.tmp
+*.temp
+.DS_Store
+*.lock
+*.gz
+*.zip
+
+# Exclure les fichiers .odt (OpenDocument Text)
+*.odt
+
+# Exclure les fichiers spécifiques à Jupyter Notebooks (facultatif si vous n'utilisez pas Jupyter)
+.ipynb_checkpoints/
+
+# Exclure les fichiers liés aux tests
+.tox/
+.coverage
+nosetests.xml
+test-results.xml
+htmlcov/
+
+# Exclure les configurations système d'éditeurs divers
+*.sublime-project
+*.sublime-workspace
