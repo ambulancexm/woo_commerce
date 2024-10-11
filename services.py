@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 
 from woocommerce import API
@@ -106,6 +107,7 @@ def get_order_by_customer_by_vendor(parent):
     return line_items_list, billing
 
 if __name__ == '__main__':
+    user_home = os.path.expanduser("~")
     df_achat = pd.DataFrame(columns=['order_id', 'produit', 'quantite', 'producteur', 'prix'])
     vendeur_list = get_list_de_vendeurs()
     id_list = retrieve_main_order()
@@ -125,6 +127,8 @@ if __name__ == '__main__':
         }
         command_list.append(data_tab)
         df_achat = pd.concat([df_achat, df_temp], ignore_index=True)
-    create_excel_file(command_list, f'client_{datetime.now()}.xlsx')
-    create_producer_price_table(df_achat, f'producteur_{datetime.now()}.xlsx')
+    main_path = fr'{user_home}/nayral_du_zenith'
+    now_date = datetime.now().strftime("%Y-%m-%d %H:%M")
+    create_excel_file(command_list, fr'{main_path}/client_{now_date}.xlsx')
+    create_producer_price_table(df_achat, fr'{main_path}/producteur_{now_date}.xlsx')
 
