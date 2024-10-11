@@ -3,12 +3,16 @@ import json
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Border, Side, PatternFill, Font
+from openpyxl.worksheet.header_footer import HeaderFooter
 
 
-def create_excel_file(data_liste):
+def create_excel_file(data_liste, file_name):
     # Création d'un nouveau fichier Excel
     wb = Workbook()
     ws = wb.active
+    # Configuration du pied de page avec numéros de page
+    ws.header_footer = HeaderFooter()
+    ws.header_footer.center_footer = "Page &P sur &N"  # Numéro de la page actuelle et total
     ws.title = "Commande"
 
     for data in data_liste:
@@ -22,8 +26,8 @@ def create_excel_file(data_liste):
     ws.column_dimensions['D'].width = 8  # Largeur pour "Prix"
 
     # Sauvegarde du fichier Excel
-    wb.save("commande_largeur_colonnes_grise.xlsx")
-    print("Fichier Excel avec colonnes ajustées et style créé avec succès !")
+    wb.save(file_name)
+    print(f"Fichier Excel {file_name} a ete créé avec succès !")
 
 
 def built_tab(data, ws):
@@ -93,7 +97,7 @@ def built_tab(data, ws):
     ws.append([""])  # Deuxième ligne vide
 
 
-def create_producer_price_table(df_achat, file_name='producteurs_prix.xlsx'):
+def create_producer_price_table(df_achat, file_name):
     df_achat['prix'] = pd.to_numeric(df_achat['prix'], errors='coerce')
     total_par_producteur = df_achat.groupby('producteur')['prix'].sum().reset_index()
     liste_totaux = total_par_producteur.to_dict(orient='records')

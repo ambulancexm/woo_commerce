@@ -125,6 +125,6 @@ if __name__ == '__main__':
         }
         command_list.append(data_tab)
         df_achat = pd.concat([df_achat, df_temp], ignore_index=True)
-    create_excel_file(command_list)
-    create_producer_price_table(df_achat)
-    print("test")
+    create_excel_file(command_list, f'client_{datetime.now()}.xlsx')
+    create_producer_price_table(df_achat, f'producteur_{datetime.now()}.xlsx')
+
