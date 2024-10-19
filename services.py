@@ -31,7 +31,7 @@ def get_list_de_vendeurs():
     {id, first_name, username}
         ]
     """
-    sellers = wcapi.get("customers", params={'role': 'seller', 'filter[limit]': -1}, ).json()
+    sellers = wcapi.get("customers", params={'role': 'seller', 'per_page': 100}, ).json()
     df = pd.DataFrame(sellers)
     seller_df = df[['id', 'first_name', 'username']]
     seller_list = seller_df.to_dict(orient='records')
