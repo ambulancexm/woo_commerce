@@ -64,8 +64,8 @@ def built_tab(data, ws):
     for produit in data["command"]["produits"]:
         ws.append([
             produit["producteur"],
-            produit["produit"],
             produit["quantite"],
+            produit["produit"],
             produit["prix"]
         ])
 

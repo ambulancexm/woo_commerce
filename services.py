@@ -129,6 +129,9 @@ if __name__ == '__main__':
         df_achat = pd.concat([df_achat, df_temp], ignore_index=True)
     main_path = fr'{user_home}/nayral_du_zenith'
     now_date = datetime.now().strftime("%Y-%m-%d %H:%M")
-    create_excel_file(command_list, fr'{main_path}/client_{now_date}.xlsx')
-    create_producer_price_table(df_achat, fr'{main_path}/producteur_{now_date}.xlsx')
+    folder_name = f'{datetime.now().strftime("%Y-%m-%d")}'
+    os.mkdir(os.path.join(user_home,folder_name))
+    #create_excel_file(command_list, fr'{main_path}/{folder_name}/client_{now_date}.xlsx')
+    create_excel_file(command_list, os.path.join(main_path, folder_name, f'client_{now_date}.xlsx'))
+    create_producer_price_table(df_achat, os.path.join(main_path, folder_name, f'producteur_{now_date}.xlsx'))
 
