@@ -86,7 +86,8 @@ def get_order_by_customer_by_vendor(parent):
     response = wcapi.get("orders", params={'parent': parent, 'per_page': 100})
     orders_df = pd.DataFrame(response.json())
     # Filtrer le DataFrame pour ne garder que les lignes où parent_id est égal à 0
-
+    if orders_df.empty:
+        return False
     # Sélectionner les colonnes spécifiques
     result_df = orders_df[['id', 'billing', 'meta_data','line_items', 'total']]
 
@@ -113,8 +114,10 @@ if __name__ == '__main__':
     id_list = retrieve_main_order()
     # [1629, 1625, 1621, 1615, 1612, 1605, 1599, 1593, 1577, 1532]
     command_list =[]
-    for parent in retrieve_main_order():
+    for parent in id_list:
         command = get_order_by_customer_by_vendor(parent)
+        if not command:
+            continue
         product = command[0]
         client = command[1]
         df_temp = pd.DataFrame(product)
@@ -127,11 +130,17 @@ if __name__ == '__main__':
         }
         command_list.append(data_tab)
         df_achat = pd.concat([df_achat, df_temp], ignore_index=True)
+    # Répertoire principal
+    user_home = os.path.expanduser('~')
     main_path = fr'{user_home}/nayral_du_zenith'
-    now_date = datetime.now().strftime("%Y-%m-%d %H:%M")
-    folder_name = f'{datetime.now().strftime("%Y-%m-%d")}'
-    os.mkdir(os.path.join(user_home,folder_name))
-    #create_excel_file(command_list, fr'{main_path}/{folder_name}/client_{now_date}.xlsx')
+
+    # Date sans espaces et caractères spéciaux
+    now_date = datetime.now().strftime("%Y-%m-%d_%H-%M")  # Remplacer les espaces et ":" par "_"
+    folder_name = datetime.now().strftime("%Y-%m-%d")
+    if not os.path.exists(os.path.join(main_path, folder_name)):
+        os.mkdir(os.path.join(main_path, folder_name))
+
+    # Créer les fichiers Excel
     create_excel_file(command_list, os.path.join(main_path, folder_name, f'client_{now_date}.xlsx'))
     create_producer_price_table(df_achat, os.path.join(main_path, folder_name, f'producteur_{now_date}.xlsx'))
 

@@ -21,8 +21,8 @@ def create_excel_file(data_liste, file_name):
 
     # Définir la largeur des colonnes
     ws.column_dimensions['A'].width = 15  # Largeur pour "N° commande" et "Producteur"
-    ws.column_dimensions['B'].width = 40  # Largeur pour "Nom du client" et "Produit"
-    ws.column_dimensions['C'].width = 3  # Largeur pour "Quantité"
+    ws.column_dimensions['C'].width = 40  # Largeur pour "Nom du client" et "Produit"
+    ws.column_dimensions['B'].width = 3  # Largeur pour "Quantité"
     ws.column_dimensions['D'].width = 8  # Largeur pour "Prix"
 
     # Sauvegarde du fichier Excel
@@ -58,7 +58,7 @@ def built_tab(data, ws):
         cell.fill = gris_fill
 
     # Ligne 3 : En-têtes des colonnes des produits (Producteur, Produit, Quantité, Prix)
-    ws.append(["Producteur", "Produit", "Qt", "Prix"])
+    ws.append(["Producteur",  "Qt", "Produit","Prix"])
 
     # Lignes suivantes : Données des produits
     for produit in data["command"]["produits"]:
