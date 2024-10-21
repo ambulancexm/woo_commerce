@@ -33,7 +33,8 @@ def get_list_de_vendeurs():
     """
     sellers = wcapi.get("customers", params={'role': 'seller', 'per_page': 100}, ).json()
     df = pd.DataFrame(sellers)
-    seller_df = df[['id', 'first_name', 'username']]
+    seller_df = df[['id', 'first_name', 'username', 'meta_data']]
+    seller_df['store'] = seller_df['meta_data'].apply(lambda meta_data: next((item['value'] for item in meta_data if item['key'] == 'dokan_store_name'), None))
     seller_list = seller_df.to_dict(orient='records')
     return seller_list
 
@@ -77,7 +78,7 @@ def retrieve_main_order():
 def trouver_vendeur_par_id(vendeurs, id_recherche):
     for vendeur in vendeurs:
         if vendeur['id'] == id_recherche:
-            return vendeur['first_name']
+            return vendeur['store']
     return None  # Si l'id n'est pas trouvé, retourner None
 
 
@@ -141,6 +142,5 @@ if __name__ == '__main__':
         os.mkdir(os.path.join(main_path, folder_name))
 
     # Créer les fichiers Excel
-    create_excel_file(command_list, os.path.join(main_path, folder_name, f'client_{now_date}.xlsx'))
-    create_producer_price_table(df_achat, os.path.join(main_path, folder_name, f'producteur_{now_date}.xlsx'))
+    create_excel_file(command_list, df_achat, os.path.join(main_path, folder_name, f'commande_{now_date}.xlsx'))
 

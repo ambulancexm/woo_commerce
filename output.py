@@ -6,7 +6,7 @@ from openpyxl.styles import Border, Side, PatternFill, Font
 from openpyxl.worksheet.header_footer import HeaderFooter
 
 
-def create_excel_file(data_liste, file_name):
+def create_excel_file(data_liste, df_achat, file_name):
     # Création d'un nouveau fichier Excel
     wb = Workbook()
     ws = wb.active
@@ -21,9 +21,11 @@ def create_excel_file(data_liste, file_name):
 
     # Définir la largeur des colonnes
     ws.column_dimensions['A'].width = 15  # Largeur pour "N° commande" et "Producteur"
-    ws.column_dimensions['C'].width = 40  # Largeur pour "Nom du client" et "Produit"
+    ws.column_dimensions['C'].width = 50  # Largeur pour "Nom du client" et "Produit"
     ws.column_dimensions['B'].width = 3  # Largeur pour "Quantité"
     ws.column_dimensions['D'].width = 8  # Largeur pour "Prix"
+
+    create_producer_price_table(df_achat, {}, ws)
 
     # Sauvegarde du fichier Excel
     wb.save(file_name)
@@ -44,14 +46,14 @@ def built_tab(data, ws):
     thick_dotted_border = Border(top=Side(style='mediumDashDot'))
 
     # Ligne 1 : En-têtes pour N° commande et Nom du client
-    ws.append(["N° commande", "Nom du client"])
+    ws.append(["N° commande"," ", "Nom du client"])
 
     # Appliquer le remplissage gris clair à la ligne des en-têtes
     for cell in ws[ws.max_row]:
         cell.fill = gris_fill
 
     # Ligne 2 : Valeurs pour le numéro de commande et le nom du client
-    ws.append([data["command"]["numero"], data["command"]["client"]])
+    ws.append([data["command"]["numero"], " " ,data["command"]["client"]])
 
     # Appliquer le remplissage gris clair à la ligne des données de commande et client
     for cell in ws[ws.max_row]:
@@ -97,17 +99,18 @@ def built_tab(data, ws):
     ws.append([""])  # Deuxième ligne vide
 
 
-def create_producer_price_table(df_achat, file_name):
+
+
+
+def create_producer_price_table(df_achat, file_name, ws):
     df_achat['prix'] = pd.to_numeric(df_achat['prix'], errors='coerce')
     total_par_producteur = df_achat.groupby('producteur')['prix'].sum().reset_index()
     liste_totaux = total_par_producteur.to_dict(orient='records')
     # Créer un nouveau fichier Excel
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Producteurs et Prix"
+
 
     # Définir les en-têtes des colonnes
-    ws.append(["Producteur", "Prix"])
+    ws.append([" "," ","Producteur", "Prix"])
 
     # Définir des bordures fines pour les cellules
     thin_border = Border(left=Side(style='thin'),
@@ -117,18 +120,13 @@ def create_producer_price_table(df_achat, file_name):
 
     # Ajouter les données dans le tableau
     for item in liste_totaux:
-        ws.append([item['producteur'], item['prix']])
+        ws.append(["", "",item['producteur'], item['prix']])
 
     # Appliquer des bordures à chaque cellule
-    for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=2):
+    for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=3, max_col=4):
         for cell in row:
             cell.border = thin_border
 
-    # Ajuster la largeur des colonnes
-    ws.column_dimensions['A'].width = 30  # Largeur pour "Producteur"
-    ws.column_dimensions['B'].width = 15  # Largeur pour "Prix"
 
-    # Sauvegarder le fichier Excel
-    wb.save(file_name)
-    print(f"Tableau enregistré dans le fichier {file_name} avec succès !")
+
 
